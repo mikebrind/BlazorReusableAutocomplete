@@ -1,9 +1,56 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<h3>Autocomplete Component Demo</h3>
+<h4>Customers</h4>
+<AutocompleteComponent Items="Customers"
+                       SelectedValue="@(SelectedCustomer?.CompanyName)"
+                       OnSelectItem="SelectCustomer"
+                       TItem="Customer"
+                       Context="customer"
+                       ApiUrl="/api/companyfilter?filter=">
+    <OptionTemplate>
+        <span class="option-text">@customer.CompanyName</span>
+    </OptionTemplate>
+    <ResultsTemplate>
+        @if (SelectedCustomer != null)
+        {
+            <p class="mt-3">
+                Selected customer is <strong>@SelectedCustomer.CompanyName</strong>
+                with ID <strong>@SelectedCustomer.CustomerId</strong>
+            </p>
+        }
+    </ResultsTemplate>
+</AutocompleteComponent>
+<h4>Products</h4>
+<AutocompleteComponent Items="Products"
+                       TItem="Product"
+                       OnSelectItem="@((product) => { SelectedProduct = product; Products = null; })"
+                       SelectedValue="@(SelectedProduct?.ProductName)"
+                       Context="product"
+                       ApiUrl="/api/productfilter?filter=">
+    <OptionTemplate>
+        <span class="option-text">@product.ProductName</span>
+    </OptionTemplate>
+    <ResultsTemplate>
+        @if (SelectedProduct != null)
+        {
+            <p class="mt-3">
+                You selected <strong>@SelectedProduct.ProductName</strong>
+                with ID <strong>@SelectedProduct.ProductId</strong>
+            </p>
+        }
+    </ResultsTemplate>
+</AutocompleteComponent>
 
-<h1>Hello, world!</h1>
+@code {
+    List<Customer>? Customers;
+    Customer? SelectedCustomer;
+    List<Product>? Products;
+    Product? SelectedProduct;
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+    void SelectCustomer(Customer customer)
+    {
+        SelectedCustomer = customer;
+        Customers = null;
+    }
+}

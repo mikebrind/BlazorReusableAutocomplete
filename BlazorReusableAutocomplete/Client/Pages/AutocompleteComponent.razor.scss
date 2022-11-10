@@ -1,0 +1,40 @@
+﻿.autocomplete {
+    position: relative;
+
+    .options {
+        position: absolute;
+        top: 40px;
+        left: 0;
+        background: white;
+        width: 100%;
+        padding: 0;
+        z-index: 10;
+        border: 1px solid #ced4da;
+        border-radius: 0.5rem;
+        box-shadow: 0 30px 25px 8px rgb(0,0,0,0.1);
+    }
+
+    .option {
+        display: block;
+        padding: 0.25rem;
+
+        .option-text {
+            padding: 0.25rem 0.5rem;
+        }
+
+        &:hover {
+            background: #1E90FF;
+            color: #fff;
+        }
+
+        &.disabled {
+            background-color: lightgrey;
+            cursor: not-allowed;
+
+            &:hover {
+                background: lightgrey;
+                color: var(--bs-body);
+            }
+        }
+    }
+}

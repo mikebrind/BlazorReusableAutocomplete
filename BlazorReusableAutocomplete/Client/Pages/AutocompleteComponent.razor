@@ -1,0 +1,49 @@
+﻿@typeparam TItem
+@inject HttpClient http
+<div class="autocomplete w-25">
+    <input @bind=SelectedValue @oninput=HandleInput class="form-control filter" />
+    @if (Items is not null)
+    {
+        <ul class="options">
+            @if (Items.Any())
+            {
+                @foreach (var item in Items)
+                {
+                    <li class="option" @onclick="_ => SelectItem(item)">
+                        @OptionTemplate(item)
+                    </li>
+                }
+            }
+            else
+            {
+                <li class="disabled option">No results</li>
+            }
+        </ul>
+    }
+</div>
+@ResultsTemplate
+@code {
+    [Parameter, EditorRequired] public IEnumerable<TItem>? Items { get; set; }
+    [Parameter, EditorRequired] public EventCallback<TItem> OnSelectItem { get; set; }
+    [Parameter] public string? SelectedValue { get; set; }
+    [Parameter] public RenderFragment? ResultsTemplate { get; set; }
+    [Parameter, EditorRequired] public RenderFragment<TItem> OptionTemplate { get; set; } = default!;
+    [Parameter, EditorRequired] public string? ApiUrl { get; set; }
+
+    string? filter;
+
+    async Task HandleInput(ChangeEventArgs e)
+    {
+        filter = e.Value?.ToString();
+        if (filter?.Length > 2)
+        {
+            Items = await http.GetFromJsonAsync<IEnumerable<TItem>>($"{ApiUrl}{filter}");
+        }
+        else
+        {
+            Items = null;
+        }
+    }
+
+    async Task SelectItem(TItem item) => await OnSelectItem.InvokeAsync(item);
+}
